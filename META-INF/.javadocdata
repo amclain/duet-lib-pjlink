@@ -58,6 +58,19 @@
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="357" const="357" name="CHAN_INPUT_NETWORK_7" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="358" const="358" name="CHAN_INPUT_NETWORK_8" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="359" const="359" name="CHAN_INPUT_NETWORK_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="500" const="500" name="CHAN_ERROR_FAN_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="501" const="501" name="CHAN_ERROR_FAN_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="502" const="502" name="CHAN_ERROR_LAMP_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="503" const="503" name="CHAN_ERROR_LAMP_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="504" const="504" name="CHAN_ERROR_TEMP_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="505" const="505" name="CHAN_ERROR_TEMP_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="506" const="506" name="CHAN_ERROR_COVER_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="507" const="507" name="CHAN_ERROR_COVER_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="508" const="508" name="CHAN_ERROR_FILTER_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="509" const="509" name="CHAN_ERROR_FILTER_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="510" const="510" name="CHAN_ERROR_OTHER_WARNING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="511" const="511" name="CHAN_ERROR_OTHER_ERROR" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="512" const="512" name="CHAN_ERROR_PROJECTOR_FAILURE" static="true"></dev:field>
 		</dev:fields>
 		<dev:methods>
 			<dev:constructor visibility="public" name="PJLinkModule"></dev:constructor>

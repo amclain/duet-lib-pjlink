@@ -21,10 +21,28 @@ import java.util.TimerTask;
  * http://pjlink.jbmia.or.jp/english/data/PJLink%20Specifications100.pdf
  */
 public class PJLink {
+	//	 Packed error bits:
+	// | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+	// |Fail|Unav|Undf|    |  Other  | Filter| Cover |  Temp |  Lamp |  Fan  |
+	
 	// Projector errors.
-	public static final int ERROR_UNDEFINED_COMMAND	= 1;
-	public static final int ERROR_UNAVAILABLE_TIME	= 3;
-	public static final int ERROR_PROJECTOR_FAILURE	= 4;
+	// See SocketDataListener private class for bit map.
+	public static final int ERROR_FAN_WARNING		= 0x0001;
+	public static final int ERROR_FAN_ERROR			= 0x0002;
+	public static final int ERROR_LAMP_WARNING		= 0x0004;
+	public static final int ERROR_LAMP_ERROR		= 0x0008;
+	public static final int ERROR_TEMP_WARNING		= 0x0010;
+	public static final int ERROR_TEMP_ERROR		= 0x0020;
+	public static final int ERROR_COVER_WARNING		= 0x0040;
+	public static final int ERROR_COVER_ERROR		= 0x0080;
+	public static final int ERROR_FILTER_WARNING	= 0x0100;
+	public static final int ERROR_FILTER_ERROR		= 0x0200;
+	public static final int ERROR_OTHER_WARNING		= 0x0400;
+	public static final int ERROR_OTHER_ERROR		= 0x0800;
+	
+	public static final int ERROR_UNDEFINED_COMMAND	= 0x2000;
+	public static final int ERROR_UNAVAILABLE_TIME	= 0x4000;
+	public static final int ERROR_PROJECTOR_FAILURE	= 0x8000;
 	
 	// Power codes taken from PJLink spec.
 	public static final int POWER_OFF			= 0;
@@ -121,6 +139,13 @@ public class PJLink {
 	private boolean _newVideoMuteActive = false;
 	
 	private int _lampHours = 0;
+	
+	int _fanError = 0;
+	int _lampError = 0;
+	int _tempError = 0;
+	int _coverError = 0;
+	int _filterError = 0;
+	int _otherError = 0;
 	
 	////////////////////////////////////////////////////////////
 	
@@ -644,26 +669,33 @@ public class PJLink {
 								// TODO: Implement error status response.
 								
 								if (line.length() == 13) {
-									int fanError = Integer.parseInt(line.substring(7, 8));
-									int lampError = Integer.parseInt(line.substring(8, 9));
-									int tempError = Integer.parseInt(line.substring(9, 10));
-									int coverError = Integer.parseInt(line.substring(10, 11));
-									int filterError = Integer.parseInt(line.substring(11, 12));
-									int otherError = Integer.parseInt(line.substring(12, 13));
+									_fanError = Integer.parseInt(line.substring(7, 8));
+									_lampError = Integer.parseInt(line.substring(8, 9));
+									_tempError = Integer.parseInt(line.substring(9, 10));
+									_coverError = Integer.parseInt(line.substring(10, 11));
+									_filterError = Integer.parseInt(line.substring(11, 12));
+									_otherError = Integer.parseInt(line.substring(12, 13));
 									
-									// TODO: Remove
-									/*
-									System.out.println(
-											"Fan error: " + fanError + "\n" +
-											"Lamp error: " + lampError + "\n" +
-											"Temp error: " + tempError + "\n" +
-											"Cover error: " + coverError + "\n" +
-											"Filter error: " + filterError + "\n" +
-											"Other error: " + otherError
-									);
-									*/
+									// TODO: Refactor error status bit packing.
+									//       This method will just confuse people who are unfamiliar with binary operations.
+									//       Make it easy and well-named.
 									
-									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, fanError + lampError + tempError + coverError + filterError + otherError));
+									// Packed bits:
+									// | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+									// |Fail|Unav|Undf|    |  Other  | Filter| Cover |  Temp |  Lamp |  Fan  |
+									
+									// Bit 15: Projector Failure
+									// Bit 14: In Unavailable Time
+									// Bit 13: Undefined Command
+									
+									int packedData = 	_fanError		<< 0 +
+														_lampError		<< 2 + 
+														_tempError		<< 4 +
+														_coverError		<< 6 +
+														_filterError	<< 8 +
+														_otherError		<< 10;
+									
+									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, packedData));
 								}
 							}
 							

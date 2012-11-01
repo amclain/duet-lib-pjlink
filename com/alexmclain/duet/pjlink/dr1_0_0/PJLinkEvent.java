@@ -8,7 +8,6 @@ public class PJLinkEvent {
 	public static final int EVENT_INPUT			= 2;
 	public static final int EVENT_AV_MUTE		= 3;
 	public static final int EVENT_LAMP			= 4;
-	//public static final int EVENT_DEVICE_ERROR	= 5;
 	
 	private int _eventType;
 	private int _data;

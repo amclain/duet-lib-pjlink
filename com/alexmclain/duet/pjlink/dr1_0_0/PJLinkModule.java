@@ -53,12 +53,14 @@ import com.amx.duet.util.Timer;
  * 		// Errors And Warnings
  * 		// (Feedback Only)
  * 
- * 		502	Fan Warning
- * 		503	Fan Error
- * 		504	Lamp Warning
- * 		505	Lamp Error
- * 		506	Temperature Warning
- * 		507	Temperature Error
+ * 		500	Fan Warning
+ * 		501	Fan Error
+ * 		502	Lamp Warning
+ * 		503	Lamp Error
+ * 		504	Temperature Warning
+ * 		505	Temperature Error
+ * 		506	Cover Warning
+ * 		507	Cover Error
  * 		508	Filter Warning
  * 		509	Filter Error
  * 		510	Other Warning
@@ -86,6 +88,7 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 	 	EXTENDED CHANNELS
 	***********************************************************/
 	
+	// Input Selection And Indicators
 	public static final int CHAN_INPUT_RGB_1		= 311;
 	public static final int CHAN_INPUT_RGB_2		= 312;
 	public static final int CHAN_INPUT_RGB_3		= 313;
@@ -135,6 +138,22 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 	public static final int CHAN_INPUT_NETWORK_7	= 357;
 	public static final int CHAN_INPUT_NETWORK_8	= 358;
 	public static final int CHAN_INPUT_NETWORK_9	= 359;
+	
+	
+	// Error Status Indicators
+	public static final int CHAN_ERROR_FAN_WARNING			= 500;
+	public static final int CHAN_ERROR_FAN_ERROR			= 501;
+	public static final int CHAN_ERROR_LAMP_WARNING			= 502;
+	public static final int CHAN_ERROR_LAMP_ERROR			= 503;
+	public static final int CHAN_ERROR_TEMP_WARNING			= 504;
+	public static final int CHAN_ERROR_TEMP_ERROR			= 505;
+	public static final int CHAN_ERROR_COVER_WARNING		= 506;
+	public static final int CHAN_ERROR_COVER_ERROR			= 507;
+	public static final int CHAN_ERROR_FILTER_WARNING		= 508;
+	public static final int CHAN_ERROR_FILTER_ERROR			= 509;
+	public static final int CHAN_ERROR_OTHER_WARNING		= 510;
+	public static final int CHAN_ERROR_OTHER_ERROR			= 511;
+	public static final int CHAN_ERROR_PROJECTOR_FAILURE	= 512;
 	
 	/***********************************************************
  	
@@ -352,9 +371,135 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 		switch (e.getEventType()) {
 		
 		case PJLinkEvent.EVENT_ERROR:
-			if (e.getEventData() == PJLink.ERROR_PROJECTOR_FAILURE) {
+			int error = e.getEventData();
+			
+			if (error == 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_PROJECTOR_FAILURE);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_PROJECTOR_FAILURE);
+			}
+			
+			if ((error & (	PJLink.ERROR_PROJECTOR_FAILURE |
+					PJLink.ERROR_COVER_ERROR | PJLink.ERROR_FAN_ERROR | PJLink.ERROR_FILTER_ERROR |
+					PJLink.ERROR_LAMP_ERROR | PJLink.ERROR_OTHER_ERROR | PJLink.ERROR_TEMP_ERROR)) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_PROJECTOR_FAILURE);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_PROJECTOR_FAILURE);
 				System.out.println("PJLink projector failure. " + dvDuet.getDPS().toString() + " - " + source.getIPAddress()); 
 			}
+			
+			if ((error & PJLink.ERROR_FAN_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_FAN_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FAN_ERROR);
+			}
+			else if ((error & PJLink.ERROR_FAN_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_FAN_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_FAN_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FAN_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_FAN_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FAN_ERROR);
+			}
+			
+			if ((error & PJLink.ERROR_LAMP_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_LAMP_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_LAMP_ERROR);
+			}
+			else if ((error & PJLink.ERROR_LAMP_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_LAMP_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_LAMP_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_LAMP_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_LAMP_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_LAMP_ERROR);
+			}
+			
+			if ((error & PJLink.ERROR_TEMP_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_TEMP_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_TEMP_ERROR);
+			}
+			else if ((error & PJLink.ERROR_TEMP_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_TEMP_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_TEMP_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_TEMP_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_TEMP_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_TEMP_ERROR);
+			}
+			
+			if ((error & PJLink.ERROR_COVER_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_COVER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_COVER_ERROR);
+			}
+			else if ((error & PJLink.ERROR_COVER_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_COVER_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_COVER_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_COVER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_COVER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_COVER_ERROR);
+			}
+			
+			if ((error & PJLink.ERROR_FILTER_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_FILTER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FILTER_ERROR);
+			}
+			else if ((error & PJLink.ERROR_FILTER_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_FILTER_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_FILTER_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FILTER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_FILTER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_FILTER_ERROR);
+			}
+			
+			if ((error & PJLink.ERROR_OTHER_WARNING) > 0) {
+				dvDuet.onOutputChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_OTHER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_OTHER_ERROR);
+			}
+			else if ((error & PJLink.ERROR_OTHER_ERROR) > 0) {
+				dvDuet.offOutputChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.onOutputChannel(CHAN_ERROR_OTHER_ERROR);
+				dvDuet.onFeedbackChannel(CHAN_ERROR_OTHER_ERROR);
+			}
+			else {
+				dvDuet.offOutputChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_OTHER_WARNING);
+				dvDuet.offOutputChannel(CHAN_ERROR_OTHER_ERROR);
+				dvDuet.offFeedbackChannel(CHAN_ERROR_OTHER_ERROR);
+			}
+			
 			break;
 		
 		case PJLinkEvent.EVENT_POWER:
