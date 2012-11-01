@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dev:type-info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dev="http://www.amx.com/duet/devicesdk"  xsi:schemaLocation="http://www.amx.com/duet/devicesdk/deviceclass.xsd">
+	<dev:class superclass="com.amx.duet.devicesdk.Utility" serializable="true" name="com.alexmclain.duet.pjlink.dr1_0_0.PJLinkModule">
+		<dev:extends>
+			<dev:extend name="com.alexmclain.duet.pjlink.dr1_0_0.PJLinkListener"></dev:extend>
+		</dev:extends>
+		<dev:fields>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="199" const="199" name="CHAN_AUDIO_MUTE" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="211" const="211" name="CHAN_PICTURE_MUTE" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="214" const="214" name="CHAN_FREEZE" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="251" const="251" name="CHAN_DEVICE_IS_INITIALIZED" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="252" const="252" name="CHAN_DATA_IS_INITIALIZED" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="253" const="253" name="CHAN_WARMING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="254" const="254" name="CHAN_COOLING" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="255" const="255" name="CHAN_LAMP" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="311" const="311" name="CHAN_INPUT_RGB_1" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="312" const="312" name="CHAN_INPUT_RGB_2" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="313" const="313" name="CHAN_INPUT_RGB_3" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="314" const="314" name="CHAN_INPUT_RGB_4" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="315" const="315" name="CHAN_INPUT_RGB_5" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="316" const="316" name="CHAN_INPUT_RGB_6" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="317" const="317" name="CHAN_INPUT_RGB_7" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="318" const="318" name="CHAN_INPUT_RGB_8" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="319" const="319" name="CHAN_INPUT_RGB_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="321" const="321" name="CHAN_INPUT_VIDEO_1" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="322" const="322" name="CHAN_INPUT_VIDEO_2" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="323" const="323" name="CHAN_INPUT_VIDEO_3" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="324" const="324" name="CHAN_INPUT_VIDEO_4" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="325" const="325" name="CHAN_INPUT_VIDEO_5" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="326" const="326" name="CHAN_INPUT_VIDEO_6" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="327" const="327" name="CHAN_INPUT_VIDEO_7" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="328" const="328" name="CHAN_INPUT_VIDEO_8" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="329" const="329" name="CHAN_INPUT_VIDEO_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="331" const="331" name="CHAN_INPUT_DIGITAL_1" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="332" const="332" name="CHAN_INPUT_DIGITAL_2" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="333" const="333" name="CHAN_INPUT_DIGITAL_3" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="334" const="334" name="CHAN_INPUT_DIGITAL_4" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="335" const="335" name="CHAN_INPUT_DIGITAL_5" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="336" const="336" name="CHAN_INPUT_DIGITAL_6" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="337" const="337" name="CHAN_INPUT_DIGITAL_7" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="338" const="338" name="CHAN_INPUT_DIGITAL_8" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="339" const="339" name="CHAN_INPUT_DIGITAL_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="341" const="341" name="CHAN_INPUT_STORAGE_1" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="342" const="342" name="CHAN_INPUT_STORAGE_2" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="343" const="343" name="CHAN_INPUT_STORAGE_3" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="344" const="344" name="CHAN_INPUT_STORAGE_4" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="345" const="345" name="CHAN_INPUT_STORAGE_5" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="346" const="346" name="CHAN_INPUT_STORAGE_6" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="347" const="347" name="CHAN_INPUT_STORAGE_7" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="348" const="348" name="CHAN_INPUT_STORAGE_8" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="349" const="349" name="CHAN_INPUT_STORAGE_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="351" const="351" name="CHAN_INPUT_NETWORK_1" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="352" const="352" name="CHAN_INPUT_NETWORK_2" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="353" const="353" name="CHAN_INPUT_NETWORK_3" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="354" const="354" name="CHAN_INPUT_NETWORK_4" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="355" const="355" name="CHAN_INPUT_NETWORK_5" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="356" const="356" name="CHAN_INPUT_NETWORK_6" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="357" const="357" name="CHAN_INPUT_NETWORK_7" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="358" const="358" name="CHAN_INPUT_NETWORK_8" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="359" const="359" name="CHAN_INPUT_NETWORK_9" static="true"></dev:field>
+		</dev:fields>
+		<dev:methods>
+			<dev:constructor visibility="public" name="PJLinkModule"></dev:constructor>
+			<dev:constructor visibility="public" name="PJLinkModule">
+				<dev:params>
+					<dev:param type="org.osgi.framework.BundleContext" name="bctxt"></dev:param>
+					<dev:param type="com.amx.duet.da.NetLinxDevice" name="nd"></dev:param>
+					<dev:param type="java.util.Properties" name="props"></dev:param>
+				</dev:params>
+			</dev:constructor>
+			<dev:method visibility="public" type="boolean" name="isDeviceOnLine"></dev:method>
+			<dev:method visibility="public" type="boolean" name="isDataInitialized"></dev:method>
+			<dev:method visibility="public" type="void" name="createNetLinxDevice">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.DPS" name="dps"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleAdvancedEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleButtonEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="int" name="channel"></dev:param>
+					<dev:param type="boolean" name="push"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleChannelEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="int" name="channel"></dev:param>
+					<dev:param type="boolean" name="on"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleCommandEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="java.lang.String" name="cmd"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleCustomEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="com.amx.duet.core.master.netlinx.Custom" name="cEvt"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleDataEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="int" name="type"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleLevelEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="int" name="level"></dev:param>
+					<dev:param type="com.amx.duet.core.master.netlinx.Level" name="value"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleStringEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.core.master.netlinx.Event" name="obj"></dev:param>
+					<dev:param type="java.lang.String" name="str"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="handleTimerEvent">
+				<dev:params>
+					<dev:param type="com.amx.duet.util.Timer" name="arg"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="passThru">
+				<dev:params>
+					<dev:param type="byte[]" name="buffer"></dev:param>
+				</dev:params>
+			</dev:method>
+			<dev:method visibility="public" type="void" name="deviceStateChanged">
+				<dev:params>
+					<dev:param type="com.alexmclain.duet.pjlink.dr1_0_0.PJLink" name="source"></dev:param>
+					<dev:param type="com.alexmclain.duet.pjlink.dr1_0_0.PJLinkEvent" name="e"></dev:param>
+				</dev:params>
+			</dev:method>
+		</dev:methods>
+	</dev:class>
+</dev:type-info>

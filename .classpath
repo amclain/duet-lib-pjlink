@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="dist/" kind="src" path=""/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/core.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/http.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/j2me.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/morpheus.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/oscar.jar"/>
+	<classpathentry sourcepath="C:/Program Files (x86)/Common Files/AMXShare/Duet/src/devicesdksrc.jar" kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/bundle/devicesdk.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/bundle/snapirouter.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

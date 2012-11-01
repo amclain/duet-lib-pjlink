@@ -1,0 +1,15 @@
+#Cafe Duet Properties
+#Mon Oct 29 20:45:31 GMT 2012
+NSelFile0=\\duet-lib-pjlink\\dist\\duet-lib-pjlink_dr1_0_0.jar
+File7=\\duet-lib-pjlink\\META-INF\\manifest.duetmf
+File6=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\PJLinkModule.java
+JarLocation=D\:\\Projects\\_AMX\\Duet Projects\\duet-lib-pjlink\\dist\\duet-lib-pjlink_dr1_0_0.jar
+File5=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\Activator.java
+File4=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\PJLinkListener.java
+EncrypFileLength=0
+File3=\\duet-lib-pjlink\\META-INF\\components.xml
+File2=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\PJLink.java
+File1=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\PJLinkEvent.java
+File0=\\duet-lib-pjlink\\duet-lib-pjlink_dr1_0_0.tko
+FileLength=8
+NSelFileLength=1

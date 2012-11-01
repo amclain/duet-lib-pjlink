@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dev:components xmlns:dev="http://www.amx.com/duet/devicesdk" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.amx.com/duet/devicesdk/components.xsd">
+<dev:component>
+<dev:component-name>IUtilityComponent</dev:component-name>
+<dev:component-interface>com.amx.duet.devicesdk.component.IUtilityComponent</dev:component-interface>
+</dev:component>
+<dev:component-mapping>
+<dev:component-name>IUtilityComponent</dev:component-name>
+<dev:icsp-port index="1">1</dev:icsp-port>
+</dev:component-mapping>
+</dev:components>
