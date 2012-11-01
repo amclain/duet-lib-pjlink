@@ -291,7 +291,7 @@ public class PJLink {
 	}
 	
 	public void queryLampHours() {
-		
+		_pjlinkQueue.push(new PJLinkCommand("%1LAMP ?"));
 	}
 	
 	
@@ -596,7 +596,6 @@ public class PJLink {
 								
 								// Accepted input selection.
 								if (line.endsWith("OK")) {
-									// TODO: Implement input response.
 									_activeInput = _newActiveInput;
 									updateInputState();
 								}
@@ -666,8 +665,6 @@ public class PJLink {
 							
 							// Error status response.
 							else if (line.startsWith("%1ERST=")) {
-								// TODO: Implement error status response.
-								
 								if (line.length() == 13) {
 									_fanError = Integer.parseInt(line.substring(7, 8));
 									_lampError = Integer.parseInt(line.substring(8, 9));
@@ -701,7 +698,12 @@ public class PJLink {
 							
 							// Lamp status response.
 							else if (line.startsWith("%1LAMP=")) {
-								// TODO: Implement lamp status response.
+								int hoursEndPos = line.indexOf(' ', 7);
+								
+								if (hoursEndPos > -1) {
+									int _lampHours = Integer.parseInt(line.substring(7, hoursEndPos));
+									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_LAMP, _lampHours));
+								}
 							}
 							
 							// Input list response.

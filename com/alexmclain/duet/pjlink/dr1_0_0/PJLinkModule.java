@@ -341,6 +341,9 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 				System.out.println("PJLink IP address set to " + _pjLink.getIPAddress() + " for " + dvDuet.getDPS().toString() + ".");
 			}
 		}
+		else if (command.toUpperCase().equals("?LAMPTIME")) {
+			_pjLink.queryLampHours();
+		}
 	}
 
 	public void handleCustomEvent(Event obj, Custom cEvt) {
@@ -550,6 +553,7 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 			break;
 			
 		case PJLinkEvent.EVENT_LAMP:
+			dvDuet.sendCommand("LAMPTIME-" + e.getEventData());
 			break;
 			
 		case PJLinkEvent.EVENT_AV_MUTE:

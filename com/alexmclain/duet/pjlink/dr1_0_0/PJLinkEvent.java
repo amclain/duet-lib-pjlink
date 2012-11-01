@@ -2,7 +2,6 @@ package com.alexmclain.duet.pjlink.dr1_0_0;
 
 public class PJLinkEvent {
 	
-	// TODO: These descriptions are terrible!
 	public static final int EVENT_ERROR			= 0;
 	public static final int EVENT_POWER			= 1;
 	public static final int EVENT_INPUT			= 2;
