@@ -13,9 +13,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * PJLink Interface
  * 
  * @author Alex McLain <alex@alexmclain.com>
- *
  *
  * REFER TO THE PJLINK SPECIFICATION:
  * http://pjlink.jbmia.or.jp/english/data/PJLink%20Specifications100.pdf
@@ -88,8 +88,8 @@ public class PJLink {
 	// A/V Mute codes taken from PJLink spec.
 	public static final int MUTE_ERROR_CANNOT_MUTE	= 2;
 	
-	public static final int MUTE_AUDIO_ONLY		= 11;
-	public static final int MUTE_VIDEO_ONLY		= 21;
+	public static final int MUTE_VIDEO_ONLY		= 11;
+	public static final int MUTE_AUDIO_ONLY		= 21;
 	public static final int MUTE_AUDIO_VIDEO	= 31;
 	public static final int MUTE_OFF			= 30;
 	
@@ -107,7 +107,6 @@ public class PJLink {
 	private ArrayList _pjlinkListeners = new ArrayList();
 	
 	// Device state.
-	private boolean _isPowerOn = false;
 	private int _powerState = POWER_OFF;
 	private int _newPowerState = POWER_OFF;
 	
@@ -115,6 +114,7 @@ public class PJLink {
 	private int _newActiveInput = INPUT_RGB_1;
 	
 	private boolean _audioMuteActive = false;
+	private boolean _audioMuteStateBeforeVideoMuted = false;
 	private boolean _newAudioMuteActive = false;
 	
 	private boolean _videoMuteActive = false;
@@ -152,41 +152,6 @@ public class PJLink {
 		}
 	}
 	
-	public void powerOn() {
-		PJLinkCommand command = new PJLinkCommand("%1POWR 1");
-		_pjlinkQueue.push(command);
-		if (_powerState == POWER_OFF) _newPowerState = POWER_WARMING;
-		queryPowerState();
-	}
-	
-	public void powerOff() {
-		PJLinkCommand command = new PJLinkCommand("%1POWR 0");
-		_pjlinkQueue.push(command);
-		if (_powerState == POWER_ON) _newPowerState = POWER_COOLING;
-		queryPowerState();
-	}
-	
-	public void switchInput(int input) {
-		if (input < 11 || input > 59) return;
-		
-		PJLinkCommand command = new PJLinkCommand("%1INPT " + input);
-		_pjlinkQueue.push(command);
-		_newActiveInput = input;
-	}
-	
-	public boolean isPowerOn() {
-		queryPowerState();
-		return _isPowerOn;
-	}
-	
-	public int getActiveInput() {
-		return _activeInput;
-	}
-	
-	public int getLampHours() {
-		return _lampHours;
-	}
-	
 	public String getIPAddress() {
 		return _ipAddress;
 	}
@@ -195,11 +160,89 @@ public class PJLink {
 		return _TCPPort;
 	}
 	
+	public int getPowerState() {
+		queryPowerState();
+		return _powerState;
+	}
+	
+	
+	public void powerOn() {
+		_pjlinkQueue.push(new PJLinkCommand("%1POWR 1"));
+		if (_powerState == POWER_OFF) _newPowerState = POWER_WARMING;
+		queryPowerState();
+	}
+	
+	public void powerOff() {
+		_pjlinkQueue.push(new PJLinkCommand("%1POWR 0"));
+		if (_powerState == POWER_ON) _newPowerState = POWER_COOLING;
+		queryPowerState();
+	}
+	
+	public void switchInput(int input) {
+		if (input < 11 || input > 59) return;
+		
+		_pjlinkQueue.push(new PJLinkCommand("%1INPT " + input));
+		_newActiveInput = input;
+	}
+	
+	public void muteAudio() {
+		if (_audioMuteActive == true) return;
+		_newAudioMuteActive = true;
+		sendAVMuteState();
+	}
+	
+	public void unmuteAudio() {
+		if (_audioMuteActive == false) return;
+		if (_videoMuteActive == false) _newAudioMuteActive = false;
+		sendAVMuteState();
+	}
+	
+	public void muteVideo() {
+		if (_videoMuteActive == true) return;
+		
+		// Muting video also mutes audio, but the audio mute
+		// state must be retained when video is unmuted again.
+		if (_videoMuteActive == false) _audioMuteStateBeforeVideoMuted = _audioMuteActive;
+		
+		_newAudioMuteActive = true;
+		_newVideoMuteActive = true;
+		sendAVMuteState();
+	}
+	
+	public void unmuteVideo() {
+		if (_videoMuteActive == false) return;
+		_newAudioMuteActive = _audioMuteStateBeforeVideoMuted;
+		_newVideoMuteActive = false;
+		sendAVMuteState();
+	}
+	
+	private void sendAVMuteState() {
+		if (_newVideoMuteActive == true) {
+			// Mute audio and video.
+			_pjlinkQueue.push(new PJLinkCommand("%1AVMT 31"));
+		}
+		else {
+			if (_newAudioMuteActive == true) {
+				// Unmute video, leave audio muted.
+				_pjlinkQueue.push(new PJLinkCommand("%1AVMT 10"));
+				_pjlinkQueue.push(new PJLinkCommand("%1AVMT 21"));
+			}
+			else {
+				// Unmute audio and video.
+				_pjlinkQueue.push(new PJLinkCommand("%1AVMT 30"));
+			}
+		}
+
+		queryAVMute();
+	}
+	
+	
 	public void queryAll() {
 		queryErrorStatus();
 		queryPowerState();
 		queryInput();
 		queryAVMute();
+		queryLampHours();
 	}
 	
 	public void queryAVMute() {
@@ -220,6 +263,10 @@ public class PJLink {
 	
 	public void queryPowerState() {
 		_pjlinkQueue.push(new PJLinkCommand("%1POWR ?"));
+	}
+	
+	public void queryLampHours() {
+		
 	}
 	
 	
@@ -251,12 +298,20 @@ public class PJLink {
 		notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_INPUT, _activeInput));
 	}
 	
-	private void updateVideoMuteState() {
+	private void updateAVMuteState() {
+		int muteState = MUTE_OFF;
 		
-	}
-	
-	private void updateAudioMuteState() {
+		if (_videoMuteActive == true && _audioMuteActive == true) {
+			muteState = MUTE_AUDIO_VIDEO;
+		}
+		else if (_videoMuteActive == true && _audioMuteActive == false) {
+			muteState = MUTE_VIDEO_ONLY;
+		}
+		else if (_videoMuteActive == false && _audioMuteActive == true) {
+			muteState = MUTE_AUDIO_ONLY;
+		}
 		
+		notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_AV_MUTE, muteState));
 	}
 	
 	
@@ -524,6 +579,7 @@ public class PJLink {
 								// Nonexistent input source.
 								else if (line.endsWith("ERR2")) {
 									_newActiveInput = _activeInput; // Input switch cancelled.
+									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_INPUT, PJLink.INPUT_ERROR_NONEXISTENT_SOURCE));
 								}
 								
 								// Returned active input value.
@@ -539,8 +595,48 @@ public class PJLink {
 							}
 							
 							// A/V mute response.
-							else if (line.startsWith("%1AVMT=")) {
-								// TODO: Implement A/V response.
+							else if (line.startsWith("%1AVMT=")) {								
+								// Accepted mute instruction.
+								if (line.endsWith("OK")) {
+									_audioMuteActive = _newAudioMuteActive;
+									_videoMuteActive = _newVideoMuteActive;
+									updateAVMuteState();
+								}
+								else if (line.endsWith("ERR2")) {
+									_newAudioMuteActive = _audioMuteActive;
+									_newVideoMuteActive = _videoMuteActive;
+									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_AV_MUTE, PJLink.MUTE_ERROR_CANNOT_MUTE));
+								}
+								else {
+									int avmt = Integer.parseInt(line.substring(7,9));
+									
+									switch (avmt) {
+									
+									case MUTE_VIDEO_ONLY:
+										_videoMuteActive = true;
+										_audioMuteActive = false;
+										break;
+									
+									case MUTE_AUDIO_ONLY:
+										_videoMuteActive = false;
+										_audioMuteActive = true;
+										break;
+										
+									case MUTE_AUDIO_VIDEO:
+										_videoMuteActive = true;
+										_audioMuteActive = true;
+										break;
+										
+									case MUTE_OFF:
+										_videoMuteActive = false;
+										_audioMuteActive = false;
+										break;
+										
+									default: break;
+									}
+									
+									updateAVMuteState();
+								}
 							}
 							
 							// Error status response.
@@ -566,6 +662,8 @@ public class PJLink {
 											"Other error: " + otherError
 									);
 									*/
+									
+									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, fanError + lampError + tempError + coverError + filterError + otherError));
 								}
 							}
 							

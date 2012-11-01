@@ -13,6 +13,8 @@ import com.amx.duet.devicesdk.Utility;
 import com.amx.duet.util.Timer;
 
 /**
+ * PJLink Duet Module
+ * @version v0.1.0
  * 
  * @author Alex McLain <alex@alexmclain.com>
  *
@@ -193,10 +195,11 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 		// Cycle Lamp Power
 		case 9:
 			if (on) {
-				if (_pjLink.isPowerOn() == true) {
+				int powerState = _pjLink.getPowerState();
+				if (powerState == PJLink.POWER_ON) {
 					_pjLink.powerOff();
 				}
-				else {
+				else if (powerState == PJLink.POWER_OFF) {
 					_pjLink.powerOn();
 				}
 			}
@@ -214,10 +217,23 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 			
 		// Set Volume Mute
 		case 199:
+			if (on) {
+				_pjLink.muteAudio();
+			}
+			else {
+				_pjLink.unmuteAudio();
+			}
 			break;
 			
 		// Set Picture Mute
+		// The module spec mutes BOTH audio and video when video is muted.
 		case 211:
+			if (on) {
+				_pjLink.muteVideo();
+			}
+			else {
+				_pjLink.unmuteVideo();
+			}
 			break;
 			
 		// Set Freeze
@@ -392,6 +408,38 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 			break;
 			
 		case PJLinkEvent.EVENT_AV_MUTE:
+			switch (e.getEventData()) {
+			
+			case PJLink.MUTE_OFF:
+				dvDuet.offOutputChannel(CHAN_AUDIO_MUTE);
+				dvDuet.offFeedbackChannel(CHAN_AUDIO_MUTE);
+				dvDuet.offOutputChannel(CHAN_PICTURE_MUTE);
+				dvDuet.offFeedbackChannel(CHAN_PICTURE_MUTE);
+				break;
+				
+			case PJLink.MUTE_AUDIO_VIDEO:
+				dvDuet.onOutputChannel(CHAN_AUDIO_MUTE);
+				dvDuet.onFeedbackChannel(CHAN_AUDIO_MUTE);
+				dvDuet.onOutputChannel(CHAN_PICTURE_MUTE);
+				dvDuet.onFeedbackChannel(CHAN_PICTURE_MUTE);
+				break;
+				
+			case PJLink.MUTE_VIDEO_ONLY:
+				dvDuet.offOutputChannel(CHAN_AUDIO_MUTE);
+				dvDuet.offFeedbackChannel(CHAN_AUDIO_MUTE);
+				dvDuet.onOutputChannel(CHAN_PICTURE_MUTE);
+				dvDuet.onFeedbackChannel(CHAN_PICTURE_MUTE);
+				break;
+				
+			case PJLink.MUTE_AUDIO_ONLY:
+				dvDuet.onOutputChannel(CHAN_AUDIO_MUTE);
+				dvDuet.onFeedbackChannel(CHAN_AUDIO_MUTE);
+				dvDuet.offOutputChannel(CHAN_PICTURE_MUTE);
+				dvDuet.offFeedbackChannel(CHAN_PICTURE_MUTE);
+				break;
+			
+			default: break;
+			}
 			break;
 		
 		default:
