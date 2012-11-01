@@ -360,10 +360,14 @@ public class PJLink {
 		 */
 		public void sendCommand(String command) {
 			synchronized (_socketLock) {
-				
-				////////////////////////////////////////////////////////////////////////////////
-				// TODO: Add a timer to flip the synchronization flags if the connection stalls.
-				////////////////////////////////////////////////////////////////////////////////
+				// Expires the connection if it stalls.
+				Timer connectionExpire = new Timer(false);
+				connectionExpire.schedule(new TimerTask() {
+					public void run() {
+						disconnect();
+						this.cancel();
+					}
+				}, 2000);
 				
 				connect();
 				
@@ -378,6 +382,8 @@ public class PJLink {
 				}
 				
 				while (_socketCommandReceived == false) Thread.yield();
+				
+				connectionExpire.cancel();
 			}
 		}
 		
@@ -416,6 +422,9 @@ public class PJLink {
 		
 		private void disconnect() {
 			try {
+				_socketReadyForCommand = true;
+				_socketCommandReceived = true;
+				
 				_socket.close();
 				_socketReader = null;
 				_socketWriter = null;
@@ -431,8 +440,6 @@ public class PJLink {
 		***********************************************************/
 		private class SocketDataListener implements Runnable {
 			
-			// TODO: Add timeout timer.
-
 			public void run() {
 				if (_socketReader == null) return;
 				
@@ -441,6 +448,7 @@ public class PJLink {
 				try {
 					while (	_socketReader != null &&
 							_socket != null &&
+							_socket.isClosed() == false &&
 							(line = _socketReader.readLine()) != null) {
 						
 						// TODO: Remove
