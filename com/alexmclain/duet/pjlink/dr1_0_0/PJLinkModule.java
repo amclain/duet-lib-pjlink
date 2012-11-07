@@ -52,6 +52,7 @@ import com.amx.duet.util.Timer;
  * 
  * 		// Errors And Warnings
  * 		// (Feedback Only)
+ * 		499	Connection Error	
  * 
  * 		500	Fan Warning
  * 		501	Fan Error
@@ -141,6 +142,8 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 	
 	
 	// Error Status Indicators
+	public static final int CHAN_ERROR_CONNECTION			= 499;
+	
 	public static final int CHAN_ERROR_FAN_WARNING			= 500;
 	public static final int CHAN_ERROR_FAN_ERROR			= 501;
 	public static final int CHAN_ERROR_LAMP_WARNING			= 502;
@@ -387,6 +390,17 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 				dvDuet.onOutputChannel(CHAN_ERROR_PROJECTOR_FAILURE);
 				dvDuet.onFeedbackChannel(CHAN_ERROR_PROJECTOR_FAILURE);
 				System.out.println("PJLink projector failure. " + dvDuet.getDPS().toString() + " - " + source.getIPAddress()); 
+			}
+			
+			if ((error & PJLink.ERROR_CONNECTION) > 0) {
+				if (_pjLink.getConnectionError() == true) {
+					dvDuet.onOutputChannel(CHAN_ERROR_CONNECTION);
+					dvDuet.onFeedbackChannel(CHAN_ERROR_CONNECTION);
+				}
+				else {
+					dvDuet.offOutputChannel(CHAN_ERROR_CONNECTION);
+					dvDuet.offFeedbackChannel(CHAN_ERROR_CONNECTION);
+				}
 			}
 			
 			if ((error & PJLink.ERROR_FAN_WARNING) > 0) {

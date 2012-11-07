@@ -1,5 +1,5 @@
 #Cafe Duet Properties
-#Thu Nov 01 16:48:56 GMT 2012
+#Wed Nov 07 01:34:26 GMT 2012
 NSelFile0=\\duet-lib-pjlink\\dist\\duet-lib-pjlink_dr1_0_0.jar
 File7=\\duet-lib-pjlink\\META-INF\\manifest.duetmf
 File6=\\duet-lib-pjlink\\com\\alexmclain\\duet\\pjlink\\dr1_0_0\\PJLinkModule.java

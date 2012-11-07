@@ -23,7 +23,7 @@ import java.util.TimerTask;
 public class PJLink {
 	//	 Packed error bits:
 	// | 15 | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
-	// |Fail|Unav|Undf|    |  Other  | Filter| Cover |  Temp |  Lamp |  Fan  |
+	// |Fail|Unav|Undf|Conn|  Other  | Filter| Cover |  Temp |  Lamp |  Fan  |
 	
 	// Projector errors.
 	// See SocketDataListener private class for bit map.
@@ -40,6 +40,7 @@ public class PJLink {
 	public static final int ERROR_OTHER_WARNING		= 0x0400;
 	public static final int ERROR_OTHER_ERROR		= 0x0800;
 	
+	public static final int ERROR_CONNECTION		= 0x1000;
 	public static final int ERROR_UNDEFINED_COMMAND	= 0x2000;
 	public static final int ERROR_UNAVAILABLE_TIME	= 0x4000;
 	public static final int ERROR_PROJECTOR_FAILURE	= 0x8000;
@@ -140,6 +141,8 @@ public class PJLink {
 	
 	private int _lampHours = 0;
 	
+	boolean _connectionError = false;
+	
 	int _fanError = 0;
 	int _lampError = 0;
 	int _tempError = 0;
@@ -188,6 +191,10 @@ public class PJLink {
 	public int getPowerState() {
 		queryPowerState();
 		return _powerState;
+	}
+	
+	public boolean getConnectionError() {
+		return _connectionError;
 	}
 	
 	
@@ -444,30 +451,44 @@ public class PJLink {
 				Timer connectionExpire = new Timer(false);
 				connectionExpire.schedule(new TimerTask() {
 					public void run() {
+						_connectionError = true;
 						disconnect();
+						notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
 						this.cancel();
 					}
 				}, 2000);
 				
-				connect();
-				
-				while (_socketReadyForCommand == false) Thread.yield();
-				
-				if (_sessionUsesAuthentication == true) {
-					String pjlinkHash = new String(_md5.digest(new String(_pjlinkKey + " " + _pjlinkPassword).getBytes()));
-					_socketWriter.println(_md5.digest(pjlinkHash.getBytes()) + command);
+				try {
+					connect();
+					
+					while (_socketReadyForCommand == false) Thread.yield();
+					
+					if (_sessionUsesAuthentication == true) {
+						String pjlinkHash = new String(_md5.digest(new String(_pjlinkKey + " " + _pjlinkPassword).getBytes()));
+						_socketWriter.println(_md5.digest(pjlinkHash.getBytes()) + command);
+					}
+					else {
+						_socketWriter.println(command);
+					}
+					
+					while (_socketCommandReceived == false) Thread.yield();
 				}
-				else {
-					_socketWriter.println(command);
+				catch (IOException ex) {
+					_connectionError = true;
+					notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
+					//System.out.println("PJLink connection error. " + _ipAddress);
 				}
-				
-				while (_socketCommandReceived == false) Thread.yield();
 				
 				connectionExpire.cancel();
+				
+				boolean oldConnectionErrorState = _connectionError;
+				_connectionError = false;
+				
+				if (oldConnectionErrorState == true) notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
 			}
 		}
 		
-		private void connect() {
+		private void connect() throws IOException {
 			if (_ipAddress.length() == 0) {
 				// Prevent thread from yielding on error.
 				_socketReadyForCommand = true;
@@ -481,23 +502,18 @@ public class PJLink {
 				}
 			}
 			
-			try {
-				_socket = new Socket(_ipAddress, _TCPPort);
-				_socket.setTcpNoDelay(true);
-				_socketReader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-				_socketWriter = new PrintWriter(_socket.getOutputStream(), true);
-				_sessionUsesAuthentication = false;
-				_socketReadyForCommand = false;
-				_socketCommandReceived = false;
-				_pjlinkKey = "";
-				
-				_socketDataListener = new SocketDataListener();
-				_socketThread = new Thread(_socketDataListener);
-				_socketThread.start();
-			}
-			catch (IOException ex) {
-				System.out.println("PJLink connect error: " + ex.getLocalizedMessage());
-			}
+			_socket = new Socket(_ipAddress, _TCPPort);
+			_socket.setTcpNoDelay(true);
+			_socketReader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
+			_socketWriter = new PrintWriter(_socket.getOutputStream(), true);
+			_sessionUsesAuthentication = false;
+			_socketReadyForCommand = false;
+			_socketCommandReceived = false;
+			_pjlinkKey = "";
+			
+			_socketDataListener = new SocketDataListener();
+			_socketThread = new Thread(_socketDataListener);
+			_socketThread.start();
 		}
 		
 		private void disconnect() {

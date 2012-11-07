@@ -58,6 +58,7 @@
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="357" const="357" name="CHAN_INPUT_NETWORK_7" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="358" const="358" name="CHAN_INPUT_NETWORK_8" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="359" const="359" name="CHAN_INPUT_NETWORK_9" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="499" const="499" name="CHAN_ERROR_CONNECTION" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="500" const="500" name="CHAN_ERROR_FAN_WARNING" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="501" const="501" name="CHAN_ERROR_FAN_ERROR" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="502" const="502" name="CHAN_ERROR_LAMP_WARNING" static="true"></dev:field>
