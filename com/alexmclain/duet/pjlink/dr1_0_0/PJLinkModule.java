@@ -73,6 +73,8 @@ import com.amx.duet.util.Timer;
  * 
  * Extended Commands:
  * 		IPADDR			- Set IP address.
+ * 		
+ * 		?CONN			- Query connection status.
  */
 public class PJLinkModule extends Utility implements PJLinkListener{
 	
@@ -328,10 +330,9 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 		super.handleCommandEvent(obj, cmd);
 		
 		int equalsPos = cmd.indexOf("=");
-		if (equalsPos < 0) return;
 		
-		String command = cmd.substring(0, equalsPos);
-		String value = cmd.substring(equalsPos + 1);
+		String command = (equalsPos < 0) ? cmd : cmd.substring(0, equalsPos);
+		String value = (equalsPos < 0) ? "" : cmd.substring(equalsPos + 1);
 		
 		// Set IP address.
 		if (command.toUpperCase().equals("IPADDR")) {
@@ -346,6 +347,9 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 		}
 		else if (command.toUpperCase().equals("?LAMPTIME")) {
 			_pjLink.queryLampHours();
+		}
+		else if (command.toUpperCase().equals("?CONN")) {
+			System.out.println("PJLink " + _pjLink.getIPAddress() + " connection status: " + !_pjLink.getConnectionError());
 		}
 	}
 
