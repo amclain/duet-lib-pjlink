@@ -14,7 +14,7 @@ import com.amx.duet.util.Timer;
 
 /**
  * PJLink Duet Module
- * @version v0.1.0
+ * @version 0.1.0
  * 
  * @author Alex McLain <alex@alexmclain.com>
  *

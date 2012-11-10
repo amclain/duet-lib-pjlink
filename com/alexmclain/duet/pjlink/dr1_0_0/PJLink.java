@@ -13,12 +13,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * PJLink Interface
+ * PJLink is a class for Java devices to interface with video projectors
+ * that implement the PJLink protocol over TCP/IP. This class adheres
+ * to the Java 1.4 API to maintain compatibility with AMX Duet devices.
+ * <p>
+ * The PJLink specification can be obtained at:<br>
+ * <a href="http://pjlink.jbmia.or.jp/english/data/PJLink%20Specifications100.pdf">
+ * http://pjlink.jbmia.or.jp/english/data/PJLink%20Specifications100.pdf</a>
+ * <p>
+ * This class queues requests to the projector and only keeps the network
+ * socket open for the duration of each request/response cycle.
  * 
  * @author Alex McLain <alex@alexmclain.com>
- *
- * REFER TO THE PJLINK SPECIFICATION:
- * http://pjlink.jbmia.or.jp/english/data/PJLink%20Specifications100.pdf
+ * @version 0.1.0
  */
 public class PJLink {
 	//	 Packed error bits:
@@ -152,18 +159,37 @@ public class PJLink {
 	
 	////////////////////////////////////////////////////////////
 	
+	/**
+	 * Creates an uninitialized PJLink connection.
+	 * At a minimum, the projector's IP address must be specified
+	 * before a connection can be established.
+	 */
 	public PJLink() {
 	}
 	
+	/**
+	 * Creates a PJLink connection to a projector at the specified IP address.
+	 * The default PJLink port is used.
+	 * @param ipAddress
+	 */
 	public PJLink(String ipAddress) {
 		setIPAddress(ipAddress);
 	}
 	
+	/**
+	 * Creates a PJLink connection to a projector at the specified IP address and port.
+	 * @param ipAddress
+	 * @param port
+	 */
 	public PJLink(String ipAddress, int port) {
 		setIPAddress(ipAddress);
 		setPort(port);
 	}
 	
+	/**
+	 * Adds a <code>PJLinkListener</code> to receive changes regarding the projector's state.
+	 * @param listener
+	 */
 	public void addListener(PJLinkListener listener) {
 		if (_pjlinkListeners.contains(listener) == true) return;
 		_pjlinkListeners.add(listener);
@@ -188,6 +214,9 @@ public class PJLink {
 		return _TCPPort;
 	}
 	
+	/**
+	 * @return Projector is on, off, warming, or cooling.
+	 */
 	public int getPowerState() {
 		queryPowerState();
 		return _powerState;
@@ -269,6 +298,11 @@ public class PJLink {
 	}
 	
 	
+	/**
+	 * Queries projector error status, power state, selected input,
+	 * A/V mute, and lamp hours. It does <i>not</i> query the input
+	 * list.
+	 */
 	public void queryAll() {
 		queryErrorStatus();
 		queryPowerState();
@@ -301,14 +335,6 @@ public class PJLink {
 		_pjlinkQueue.push(new PJLinkCommand("%1LAMP ?"));
 	}
 	
-	
-	/**
-	 * 
-	 * @param password
-	 * 
-	 * Setting a password automatically sets the module to use authentication.
-	 * Clearing the password disables the PJLink authentication procedure.
-	 */
 	public void setPassword(String password) {
 		_pjlinkPassword = password;
 	}
@@ -348,8 +374,9 @@ public class PJLink {
 	
 	
 	/**
-	 * 
-	 *
+	 * The refresh timer queries all of the projector's parameters
+	 * at a regular interval. This keeps the instance variables and
+	 * class's listeners up to date without the need to poll the class.
 	 */
 	private class PJLinkRefreshTimer {
 		Timer _pjlinkRefreshTimer = new Timer(true);
