@@ -483,7 +483,7 @@ public class PJLink {
 						notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
 						this.cancel();
 					}
-				}, 5000);
+				}, 10000);
 				
 				try {
 					connect();
