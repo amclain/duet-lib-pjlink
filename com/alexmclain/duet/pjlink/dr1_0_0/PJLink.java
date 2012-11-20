@@ -483,7 +483,7 @@ public class PJLink {
 						notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
 						this.cancel();
 					}
-				}, 10000);
+				}, 4000);
 				
 				try {
 					connect();
@@ -497,6 +497,8 @@ public class PJLink {
 					else {
 						_socketWriter.println(command);
 					}
+					
+					_socketWriter.flush();
 					
 					while (_socketCommandReceived == false) Thread.yield();
 				}
