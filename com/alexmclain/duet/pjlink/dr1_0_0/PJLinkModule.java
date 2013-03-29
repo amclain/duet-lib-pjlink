@@ -72,9 +72,15 @@ import com.amx.duet.util.Timer;
  * 		?LAMPTIME
  * 
  * Extended Commands:
- * 		IPADDR			- Set IP address.
+ * 		IPADDR				- Set IP address.
+ * 		DEBUG				- Print debug info to console.
+ * 		DISABLE_POLLING		- Disable polling the projector periodically for its state.
+ * 		REFRESH_INTERVAL	- Set how frequently the projector's state is polled.
  * 		
- * 		?CONN			- Query connection status.
+ * 		?CONN				- Query connection status.
+ * 		?DEBUG 
+ * 		?DISABLE_QUERY
+ * 		?REFRESH_INTERVAL
  */
 public class PJLinkModule extends Utility implements PJLinkListener{
 	
@@ -345,22 +351,56 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 				System.out.println("PJLink IP address set to " + _pjLink.getIPAddress() + " for " + dvDuet.getDPS().toString() + ".");
 			}
 		}
+		
 		else if (command.toUpperCase().equals("?LAMPTIME")) {
 			_pjLink.queryLampHours();
 		}
+		
 		else if (command.toUpperCase().equals("?CONN")) {
 			System.out.println("PJLink " + _pjLink.getIPAddress() + " connection status: " + !_pjLink.getConnectionError());
 		}
+		
 		else if (command.toUpperCase().equals("DEBUG")) {
 			if (value.equals("1") || value.toUpperCase().equals("TRUE")) {
 				_pjLink.setPrintDebug(true);
+				System.out.println("Debug enabled for device " + dvDuet.getDPS().toString() + ".");
 			}
 			else if (value.equals("0") || value.toUpperCase().equals("FALSE")) {
 				_pjLink.setPrintDebug(false);
+				System.out.println("Debug disabled for device " + dvDuet.getDPS().toString() + ".");
 			}
 		}
+		
 		else if (command.toUpperCase().equals("?DEBUG")) {
 			dvDuet.sendCommand("DEBUG-" + _pjLink.getPrintDebug());
+		}
+		
+		else if (command.toUpperCase().equals("DISABLE_POLLING")) {
+			if (value.equals("1") || value.toUpperCase().equals("TRUE")) {
+				_pjLink.setDisablePolling(true);
+				System.out.println("Polling disabled for device " + dvDuet.getDPS().toString() + ".");
+			}
+			else if (value.equals("0") || value.toUpperCase().equals("FALSE")) {
+				_pjLink.setDisablePolling(false);
+				System.out.println("Polling enabled for device " + dvDuet.getDPS().toString() + ".");
+			}
+		}
+		
+		else if (command.toUpperCase().equals("?DISABLE_POLLING")) {
+			dvDuet.sendCommand("DISABLE_POLLING-" + _pjLink.getDisablePolling());
+		}
+		
+		else if (command.toUpperCase().equals("REFRESH_INTERVAL")) {
+			try {
+				_pjLink.setRefreshInterval(Integer.parseInt(value));
+			}
+			catch (NumberFormatException ex) {
+				// Don't care.
+			}
+		}
+		
+		else if (command.toUpperCase().equals("?REFRESH_INTERVAL")) {
+			dvDuet.sendCommand("REFRESH_INTERVAL-" + _pjLink.getRefreshInterval());
 		}
 	}
 

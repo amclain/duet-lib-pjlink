@@ -157,8 +157,10 @@ public class PJLink {
 	int _filterError = 0;
 	int _otherError = 0;
 	
-	// Debug stuff.
-	boolean _printDebug = false;	// Print debug statements to the console.
+	// Module settings.
+	boolean _printDebug 	= false;	// Print debug statements to the console.
+	boolean _disablePolling	= false;	// Disable polling of the projector state.
+	long _refreshInterval	= 5;		// Number of seconds between polling of the projector state.
 	
 	////////////////////////////////////////////////////////////
 	
@@ -233,17 +235,29 @@ public class PJLink {
 		return _printDebug;
 	}
 	
+	public boolean getDisablePolling() {
+		return _disablePolling;
+	}
+	
+	public long getRefreshInterval() {
+		return _refreshInterval;
+	}
+	
 	
 	public void powerOn() {
 		_pjlinkQueue.push(new PJLinkCommand("%1POWR 1"));
-		if (_powerState == POWER_OFF) _newPowerState = POWER_WARMING;
-		queryPowerState();
+		if (_powerState == POWER_OFF) {
+			_newPowerState = (_disablePolling == false) ? POWER_WARMING : POWER_ON;
+		}
+		if (_disablePolling == false) queryPowerState();
 	}
 	
 	public void powerOff() {
 		_pjlinkQueue.push(new PJLinkCommand("%1POWR 0"));
-		if (_powerState == POWER_ON) _newPowerState = POWER_COOLING;
-		queryPowerState();
+		if (_powerState == POWER_ON) {
+			_newPowerState = (_disablePolling == false) ? POWER_COOLING : POWER_OFF;
+		}
+		if (_disablePolling == false) queryPowerState();
 	}
 	
 	public void switchInput(int input) {
@@ -301,7 +315,7 @@ public class PJLink {
 			}
 		}
 
-		queryAVMute();
+		if (_disablePolling == false) queryAVMute();
 	}
 	
 	
@@ -359,6 +373,14 @@ public class PJLink {
 		_printDebug = value;
 	}
 	
+	public void setDisablePolling(boolean value) {
+		_disablePolling = value;
+	}
+	
+	public void setRefreshInterval(long value) {
+		_refreshInterval = value;
+	}
+	
 	private void updatePowerState() {
 		notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_POWER, _powerState));
 	}
@@ -397,7 +419,7 @@ public class PJLink {
 			_pjlinkRefreshTimer.scheduleAtFixedRate(new TimerTask() {
 
 				public void run() {
-					if (_ipAddress.length() != 0) queryAll();
+					if (_ipAddress.length() != 0 && _disablePolling == false) queryAll();
 				}
 				
 			}, 5000, 5000);
