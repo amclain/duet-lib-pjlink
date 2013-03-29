@@ -229,6 +229,10 @@ public class PJLink {
 		return _connectionError;
 	}
 	
+	public boolean getPrintDebug() {
+		return _printDebug;
+	}
+	
 	
 	public void powerOn() {
 		_pjlinkQueue.push(new PJLinkCommand("%1POWR 1"));
@@ -349,6 +353,10 @@ public class PJLink {
 	
 	public void setPort(int port) {
 		_TCPPort = port;
+	}
+	
+	public void setPrintDebug(boolean value) {
+		_printDebug = value;
 	}
 	
 	private void updatePowerState() {

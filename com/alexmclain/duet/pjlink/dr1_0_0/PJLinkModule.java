@@ -351,6 +351,17 @@ public class PJLinkModule extends Utility implements PJLinkListener{
 		else if (command.toUpperCase().equals("?CONN")) {
 			System.out.println("PJLink " + _pjLink.getIPAddress() + " connection status: " + !_pjLink.getConnectionError());
 		}
+		else if (command.toUpperCase().equals("DEBUG")) {
+			if (value.equals("1") || value.toUpperCase().equals("TRUE")) {
+				_pjLink.setPrintDebug(true);
+			}
+			else if (value.equals("0") || value.toUpperCase().equals("FALSE")) {
+				_pjLink.setPrintDebug(false);
+			}
+		}
+		else if (command.toUpperCase().equals("?DEBUG")) {
+			dvDuet.sendCommand("DEBUG-" + _pjLink.getPrintDebug());
+		}
 	}
 
 	public void handleCustomEvent(Event obj, Custom cEvt) {
