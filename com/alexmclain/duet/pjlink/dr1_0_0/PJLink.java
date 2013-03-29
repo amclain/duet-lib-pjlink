@@ -157,6 +157,9 @@ public class PJLink {
 	int _filterError = 0;
 	int _otherError = 0;
 	
+	// Debug stuff.
+	boolean _printDebug = false;	// Print debug statements to the console.
+	
 	////////////////////////////////////////////////////////////
 	
 	/**
@@ -479,6 +482,9 @@ public class PJLink {
 				connectionExpire.schedule(new TimerTask() {
 					public void run() {
 						_connectionError = true;
+						
+						if (_printDebug == true) System.out.println("PJLink connection timed out. " + _ipAddress);
+						
 						disconnect();
 						notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
 						this.cancel();
@@ -490,23 +496,30 @@ public class PJLink {
 					
 					while (_socketReadyForCommand == false) Thread.yield();
 					
-					if (_sessionUsesAuthentication == true) {
-						String pjlinkHash = new String(_md5.digest(new String(_pjlinkKey + " " + _pjlinkPassword).getBytes()));
-						_socketWriter.println(_md5.digest(pjlinkHash.getBytes()) + command);
+					if (_socketWriter != null) {	// This prevents the Duet module from crashing.
+						if (_sessionUsesAuthentication == true) {
+							String pjlinkHash = new String(_md5.digest(new String(_pjlinkKey + " " + _pjlinkPassword).getBytes()));
+							_socketWriter.println(_md5.digest(pjlinkHash.getBytes()) + command);
+						}
+						else {
+							_socketWriter.println(command);
+						}
+						
+						_socketWriter.flush();
+						
+						while (_socketCommandReceived == false) Thread.yield();
 					}
-					else {
-						_socketWriter.println(command);
-					}
-					
-					_socketWriter.flush();
-					
-					while (_socketCommandReceived == false) Thread.yield();
 				}
 				catch (IOException ex) {
 					_connectionError = true;
 					notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_ERROR, PJLink.ERROR_CONNECTION));
-					//System.out.println("PJLink connection error. " + _ipAddress);
+					
+					if (_printDebug == true) System.out.println("PJLink connection error. " + _ipAddress);
 				}
+				catch (Exception ex) {
+					if (_printDebug == true) System.out.println("Unknown PJLink connection error. " + _ipAddress);
+				}
+
 				
 				connectionExpire.cancel();
 				
@@ -535,6 +548,7 @@ public class PJLink {
 			_socket.setTcpNoDelay(true);
 			_socketReader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
 			_socketWriter = new PrintWriter(_socket.getOutputStream(), true);
+			
 			_sessionUsesAuthentication = false;
 			_socketReadyForCommand = false;
 			_socketCommandReceived = false;
@@ -547,12 +561,12 @@ public class PJLink {
 		
 		private void disconnect() {
 			try {
-				_socketReadyForCommand = true;
-				_socketCommandReceived = true;
-				
 				_socket.close();
 				_socketReader = null;
 				_socketWriter = null;
+				_socketCommandReceived = true;
+				
+				_socketReadyForCommand = true;
 				_socketCommandReceived = true;
 			}
 			catch (IOException ex) {
@@ -566,8 +580,6 @@ public class PJLink {
 		private class SocketDataListener implements Runnable {
 			
 			public void run() {
-				if (_socketReader == null) return;
-				
 				String line;
 				
 				try {
@@ -576,11 +588,10 @@ public class PJLink {
 							_socket.isClosed() == false &&
 							(line = _socketReader.readLine()) != null) {
 						
-						// TODO: Remove
-						/*
-						System.out.println("PJLink received: " + line); // DEBUG /////////////////////////////////////////////////////////////////////////////////////
-						System.out.flush();
-						*/
+						if (_printDebug == true) {
+							System.out.println("PJLink received: " + line);
+							System.out.flush();
+						}
 						
 						// Projector greeting, no authentication.
 						if (line.startsWith("PJLINK 0")) {
@@ -746,7 +757,7 @@ public class PJLink {
 								int hoursEndPos = line.indexOf(' ', 7);
 								
 								if (hoursEndPos > -1) {
-									int _lampHours = Integer.parseInt(line.substring(7, hoursEndPos));
+									_lampHours = Integer.parseInt(line.substring(7, hoursEndPos));
 									notifyListeners(new PJLinkEvent(PJLinkEvent.EVENT_LAMP, _lampHours));
 								}
 							}
@@ -783,11 +794,10 @@ public class PJLink {
 			if (_command.length() == 0) return;
 			if (_ipAddress.length() == 0) return;
 			
-			// TODO: Remove
-			/*
-			System.out.println("Executing command: " + _command);
-			System.out.flush();
-			*/
+			if (_printDebug == true) {
+				System.out.println("Executing command: " + _command);
+				System.out.flush();
+			}
 			
 			_pjlinkSocket.sendCommand(_command);
 		}
