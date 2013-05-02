@@ -1,4 +1,4 @@
-MODULE_NAME='duet-lib-pjlink_dr1_0_0' (DEV dvDuetDevice)
+MODULE_NAME='duet-lib-pjlink_dr0_1_1' (DEV dvDuetDevice)
 //MODULE_NAME='duet-lib-pjlink_dr1_0_0' (DEV dvDuetDevice, DEV dvPhysicalDevice)
 (*{{PS_SOURCE_INFO(PROGRAM STATS)                          *)
 (***********************************************************)
@@ -17,13 +17,13 @@ CHAR DUET_PROPERTIES[9][47] =
 {
 	'Physical-Device',
 	'Duet-Device',
-	'Duet-Module=duet-lib-pjlink_dr1_0_0',
-	'Bundle-Version=1.0.0',
+	'Duet-Module=duet-lib-pjlink_dr0_1_1',
+	'Bundle-Version=0.1.1',
 	'Device-Category=ip',
 	'Device-Make=Alex McLain',
 	'Device-Model=PJLink',
 	'Device-SDKClass=com.amx.duet.devicesdk.Utility',
-	'Device-Revision=1.0.0'
+	'Device-Revision=0.1.1'
 }
 
 
