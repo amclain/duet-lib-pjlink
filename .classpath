@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="dist/" kind="src" path=""/>
+	<classpathentry excluding="dist/|doc/" kind="src" path=""/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/core.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/http.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/Common Files/AMXShare/Duet/lib/j2me.jar"/>

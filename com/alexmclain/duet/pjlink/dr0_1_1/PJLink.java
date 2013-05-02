@@ -1,4 +1,4 @@
-package com.alexmclain.duet.pjlink.dr1_0_0;
+package com.alexmclain.duet.pjlink.dr0_1_1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.TimerTask;
  * socket open for the duration of each request/response cycle.
  * 
  * @author Alex McLain <alex@alexmclain.com>
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class PJLink {
 	//	 Packed error bits:
