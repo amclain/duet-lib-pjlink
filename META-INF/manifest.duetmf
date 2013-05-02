@@ -15,23 +15,22 @@ Router-Service: com.amx.duet.routers.snapi.ISNAPIRouter
 Bundle-Activator: com.alexmclain.duet.pjlink.dr0_1_1.Activator
 Bundle-Version: 0.1.1
 Bundle-Vendor: Alex McLain
-Bundle-Copyright: 
- Copyright 2012,
- 2013 Alex McLain
+Bundle-Copyright: Copyright 2012,2013 Alex McLain
 Import-Package: 
  org.osgi.service.http; specification-version=1.1,
  org.osgi.service.device; specification-version=1.0.1,
  com.amx.duet.driver; specification-version=1.0.1,
- com.amx.duet.da; specification-version=1.0.1,
  com.amx.duet.core.osgi; specification-version=1.0.1,
+ com.amx.duet.da; specification-version=1.0.1,
+ com.amx.duet.util.metadata; specification-version=1.0.1,
+ com.amx.duet.util; specification-version=1.0.1,
  com.amx.duet.devicesdk; specification-version=1.8.0,
  com.amx.duet.devicesdk.base; specification-version=1.8.0,
  com.amx.duet.devicesdk.component; specification-version=1.8.0,
- com.amx.duet.devicesdk.type; specification-version=1.8.0,
- com.amx.duet.util.metadata; specification-version=1.0.1,
- com.amx.duet.util; specification-version=1.0.1
+ com.amx.duet.devicesdk.type; specification-version=1.8.0
 Export-Package: com.alexmclain.duet.pjlink.dr0_1_1; specification-vers
  ion=0.1.1
 File-Dependencies: 
  devicesdkrt.jar; specification-version=1.15.0,
  snapirouter.jar; specification-version=1.15.0
+
