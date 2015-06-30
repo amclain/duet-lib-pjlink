@@ -31,27 +31,26 @@ import com.amx.duet.util.Timer;
  * **************************************************
  * 
  * Channel:
- *      9   Cycle Lamp Power
- *      27  Set Lamp Power On
- *      28  Set Lamp Power Off
+ *      9   Toggle Power
+ *      27  Power On
+ *      28  Power Off
  * 
- *      199 Set Volume Mute
- *      211 Set Picture Mute    - Also mutes audio.
- *      214 Set Freeze
+ *      199 Audio Mute
+ *      211 Picture Mute - Also mutes audio.
+ *      214 Freeze
  * 
  *      251 Device Is Online (Feedback)
  *      252 Data Is Initialized (Feedback)
  *      253 Projector Warming (Feedback)
  *      254 Projector Cooling (Feedback)
- *      255 Set Lamp Power On (Feedback) -- Disconnected from input.
+ *      255 Lamp Power On (Feedback)
  * 
  * Extended Channel:
  *      // Select Input
  *
  *      311-359 Correspond to PJLink "INPT" values 11-59.
  * 
- *      // Errors And Warnings
- *      // (Feedback Only)
+ *      // Errors And Warnings (Feedback Only)
  *      499 Connection Error    
  * 
  *      500 Fan Warning
@@ -83,7 +82,7 @@ import com.amx.duet.util.Timer;
  *      ?REFRESH_INTERVAL
  * 
  ***********************************************************************
- *  Copyright 2012, 2013 Alex McLain
+ *  Copyright 2012, 2013, 2015 Alex McLain
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -100,87 +99,89 @@ import com.amx.duet.util.Timer;
  */
 public class PJLinkModule extends Utility implements PJLinkListener{
     
-    public static final int CHAN_AUDIO_MUTE     = 199;
-    public static final int CHAN_PICTURE_MUTE   = 211;
-    public static final int CHAN_FREEZE         = 214;
-    public static final int CHAN_DEVICE_IS_INITIALIZED  = 251;
-    public static final int CHAN_DATA_IS_INITIALIZED    = 252;
-    public static final int CHAN_WARMING        = 253;
-    public static final int CHAN_COOLING        = 254;
-    public static final int CHAN_LAMP           = 255;
+    public static final int CHAN_TOGGLE_POWER          = 9;
+    public static final int CHAN_POWER_ON              = 27;
+    public static final int CHAN_POWER_OFF             = 28;
+    public static final int CHAN_AUDIO_MUTE            = 199;
+    public static final int CHAN_PICTURE_MUTE          = 211;
+    public static final int CHAN_FREEZE                = 214;
+    public static final int CHAN_DEVICE_IS_INITIALIZED = 251;
+    public static final int CHAN_DATA_IS_INITIALIZED   = 252;
+    public static final int CHAN_WARMING               = 253;
+    public static final int CHAN_COOLING               = 254;
+    public static final int CHAN_LAMP                  = 255;
     
     /***********************************************************
         EXTENDED CHANNELS
     ***********************************************************/
     
     // Input Selection And Indicators
-    public static final int CHAN_INPUT_RGB_1        = 311;
-    public static final int CHAN_INPUT_RGB_2        = 312;
-    public static final int CHAN_INPUT_RGB_3        = 313;
-    public static final int CHAN_INPUT_RGB_4        = 314;
-    public static final int CHAN_INPUT_RGB_5        = 315;
-    public static final int CHAN_INPUT_RGB_6        = 316;
-    public static final int CHAN_INPUT_RGB_7        = 317;
-    public static final int CHAN_INPUT_RGB_8        = 318;
-    public static final int CHAN_INPUT_RGB_9        = 319;
+    public static final int CHAN_INPUT_RGB_1     = 311;
+    public static final int CHAN_INPUT_RGB_2     = 312;
+    public static final int CHAN_INPUT_RGB_3     = 313;
+    public static final int CHAN_INPUT_RGB_4     = 314;
+    public static final int CHAN_INPUT_RGB_5     = 315;
+    public static final int CHAN_INPUT_RGB_6     = 316;
+    public static final int CHAN_INPUT_RGB_7     = 317;
+    public static final int CHAN_INPUT_RGB_8     = 318;
+    public static final int CHAN_INPUT_RGB_9     = 319;
     
-    public static final int CHAN_INPUT_VIDEO_1      = 321;
-    public static final int CHAN_INPUT_VIDEO_2      = 322;
-    public static final int CHAN_INPUT_VIDEO_3      = 323;
-    public static final int CHAN_INPUT_VIDEO_4      = 324;
-    public static final int CHAN_INPUT_VIDEO_5      = 325;
-    public static final int CHAN_INPUT_VIDEO_6      = 326;
-    public static final int CHAN_INPUT_VIDEO_7      = 327;
-    public static final int CHAN_INPUT_VIDEO_8      = 328;
-    public static final int CHAN_INPUT_VIDEO_9      = 329;
+    public static final int CHAN_INPUT_VIDEO_1   = 321;
+    public static final int CHAN_INPUT_VIDEO_2   = 322;
+    public static final int CHAN_INPUT_VIDEO_3   = 323;
+    public static final int CHAN_INPUT_VIDEO_4   = 324;
+    public static final int CHAN_INPUT_VIDEO_5   = 325;
+    public static final int CHAN_INPUT_VIDEO_6   = 326;
+    public static final int CHAN_INPUT_VIDEO_7   = 327;
+    public static final int CHAN_INPUT_VIDEO_8   = 328;
+    public static final int CHAN_INPUT_VIDEO_9   = 329;
     
-    public static final int CHAN_INPUT_DIGITAL_1    = 331;
-    public static final int CHAN_INPUT_DIGITAL_2    = 332;
-    public static final int CHAN_INPUT_DIGITAL_3    = 333;
-    public static final int CHAN_INPUT_DIGITAL_4    = 334;
-    public static final int CHAN_INPUT_DIGITAL_5    = 335;
-    public static final int CHAN_INPUT_DIGITAL_6    = 336;
-    public static final int CHAN_INPUT_DIGITAL_7    = 337;
-    public static final int CHAN_INPUT_DIGITAL_8    = 338;
-    public static final int CHAN_INPUT_DIGITAL_9    = 339;
+    public static final int CHAN_INPUT_DIGITAL_1 = 331;
+    public static final int CHAN_INPUT_DIGITAL_2 = 332;
+    public static final int CHAN_INPUT_DIGITAL_3 = 333;
+    public static final int CHAN_INPUT_DIGITAL_4 = 334;
+    public static final int CHAN_INPUT_DIGITAL_5 = 335;
+    public static final int CHAN_INPUT_DIGITAL_6 = 336;
+    public static final int CHAN_INPUT_DIGITAL_7 = 337;
+    public static final int CHAN_INPUT_DIGITAL_8 = 338;
+    public static final int CHAN_INPUT_DIGITAL_9 = 339;
     
-    public static final int CHAN_INPUT_STORAGE_1    = 341;
-    public static final int CHAN_INPUT_STORAGE_2    = 342;
-    public static final int CHAN_INPUT_STORAGE_3    = 343;
-    public static final int CHAN_INPUT_STORAGE_4    = 344;
-    public static final int CHAN_INPUT_STORAGE_5    = 345;
-    public static final int CHAN_INPUT_STORAGE_6    = 346;
-    public static final int CHAN_INPUT_STORAGE_7    = 347;
-    public static final int CHAN_INPUT_STORAGE_8    = 348;
-    public static final int CHAN_INPUT_STORAGE_9    = 349;
+    public static final int CHAN_INPUT_STORAGE_1 = 341;
+    public static final int CHAN_INPUT_STORAGE_2 = 342;
+    public static final int CHAN_INPUT_STORAGE_3 = 343;
+    public static final int CHAN_INPUT_STORAGE_4 = 344;
+    public static final int CHAN_INPUT_STORAGE_5 = 345;
+    public static final int CHAN_INPUT_STORAGE_6 = 346;
+    public static final int CHAN_INPUT_STORAGE_7 = 347;
+    public static final int CHAN_INPUT_STORAGE_8 = 348;
+    public static final int CHAN_INPUT_STORAGE_9 = 349;
     
-    public static final int CHAN_INPUT_NETWORK_1    = 351;
-    public static final int CHAN_INPUT_NETWORK_2    = 352;
-    public static final int CHAN_INPUT_NETWORK_3    = 353;
-    public static final int CHAN_INPUT_NETWORK_4    = 354;
-    public static final int CHAN_INPUT_NETWORK_5    = 355;
-    public static final int CHAN_INPUT_NETWORK_6    = 356;
-    public static final int CHAN_INPUT_NETWORK_7    = 357;
-    public static final int CHAN_INPUT_NETWORK_8    = 358;
-    public static final int CHAN_INPUT_NETWORK_9    = 359;
-    
+    public static final int CHAN_INPUT_NETWORK_1 = 351;
+    public static final int CHAN_INPUT_NETWORK_2 = 352;
+    public static final int CHAN_INPUT_NETWORK_3 = 353;
+    public static final int CHAN_INPUT_NETWORK_4 = 354;
+    public static final int CHAN_INPUT_NETWORK_5 = 355;
+    public static final int CHAN_INPUT_NETWORK_6 = 356;
+    public static final int CHAN_INPUT_NETWORK_7 = 357;
+    public static final int CHAN_INPUT_NETWORK_8 = 358;
+    public static final int CHAN_INPUT_NETWORK_9 = 359;
     
     // Error Status Indicators
-    public static final int CHAN_ERROR_CONNECTION           = 499;
+    public static final int CHAN_ERROR_CONNECTION        = 499;
     
-    public static final int CHAN_ERROR_FAN_WARNING          = 500;
-    public static final int CHAN_ERROR_FAN_ERROR            = 501;
-    public static final int CHAN_ERROR_LAMP_WARNING         = 502;
-    public static final int CHAN_ERROR_LAMP_ERROR           = 503;
-    public static final int CHAN_ERROR_TEMP_WARNING         = 504;
-    public static final int CHAN_ERROR_TEMP_ERROR           = 505;
-    public static final int CHAN_ERROR_COVER_WARNING        = 506;
-    public static final int CHAN_ERROR_COVER_ERROR          = 507;
-    public static final int CHAN_ERROR_FILTER_WARNING       = 508;
-    public static final int CHAN_ERROR_FILTER_ERROR         = 509;
-    public static final int CHAN_ERROR_OTHER_WARNING        = 510;
-    public static final int CHAN_ERROR_OTHER_ERROR          = 511;
-    public static final int CHAN_ERROR_PROJECTOR_FAILURE    = 512;
+    public static final int CHAN_ERROR_FAN_WARNING       = 500;
+    public static final int CHAN_ERROR_FAN_ERROR         = 501;
+    public static final int CHAN_ERROR_LAMP_WARNING      = 502;
+    public static final int CHAN_ERROR_LAMP_ERROR        = 503;
+    public static final int CHAN_ERROR_TEMP_WARNING      = 504;
+    public static final int CHAN_ERROR_TEMP_ERROR        = 505;
+    public static final int CHAN_ERROR_COVER_WARNING     = 506;
+    public static final int CHAN_ERROR_COVER_ERROR       = 507;
+    public static final int CHAN_ERROR_FILTER_WARNING    = 508;
+    public static final int CHAN_ERROR_FILTER_ERROR      = 509;
+    public static final int CHAN_ERROR_OTHER_WARNING     = 510;
+    public static final int CHAN_ERROR_OTHER_ERROR       = 511;
+    public static final int CHAN_ERROR_PROJECTOR_FAILURE = 512;
     
     /***********************************************************
     
@@ -238,8 +239,7 @@ public class PJLinkModule extends Utility implements PJLinkListener{
         
         switch (channel) {
         
-        // Cycle Lamp Power
-        case 9:
+        case CHAN_TOGGLE_POWER:
             if (on) {
                 int powerState = _pjLink.getPowerState();
                 if (powerState == PJLink.POWER_ON) {
@@ -251,18 +251,15 @@ public class PJLinkModule extends Utility implements PJLinkListener{
             }
             break;
             
-        // Lamp Power On - Momentary
-        case 27:
+        case CHAN_POWER_ON:
             if (on) _pjLink.powerOn();
             break;
         
-        // Lamp Power Off - Momentary
-        case 28:
+        case CHAN_POWER_OFF:
             if (on) _pjLink.powerOff();
             break;
             
-        // Set Volume Mute
-        case 199:
+        case CHAN_AUDIO_MUTE:
             if (on) {
                 _pjLink.muteAudio();
             }
@@ -271,9 +268,7 @@ public class PJLinkModule extends Utility implements PJLinkListener{
             }
             break;
             
-        // Set Picture Mute
-        // The module spec mutes BOTH audio and video when video is muted.
-        case 211:
+        case CHAN_PICTURE_MUTE:
             if (on) {
                 _pjLink.muteVideo();
             }
@@ -282,63 +277,62 @@ public class PJLinkModule extends Utility implements PJLinkListener{
             }
             break;
             
-        // Set Freeze
-        case 214:
+        case CHAN_FREEZE:
             break;
             
         // EXTENDED CHANNELS //
         
-        case 311:   _pjLink.switchInput(PJLink.INPUT_RGB_1); break;
-        case 312:   _pjLink.switchInput(PJLink.INPUT_RGB_2); break;
-        case 313:   _pjLink.switchInput(PJLink.INPUT_RGB_3); break;
-        case 314:   _pjLink.switchInput(PJLink.INPUT_RGB_4); break;
-        case 315:   _pjLink.switchInput(PJLink.INPUT_RGB_5); break;
-        case 316:   _pjLink.switchInput(PJLink.INPUT_RGB_6); break;
-        case 317:   _pjLink.switchInput(PJLink.INPUT_RGB_7); break;
-        case 318:   _pjLink.switchInput(PJLink.INPUT_RGB_8); break;
-        case 319:   _pjLink.switchInput(PJLink.INPUT_RGB_9); break;
+        case CHAN_INPUT_RGB_1: _pjLink.switchInput(PJLink.INPUT_RGB_1); break;
+        case CHAN_INPUT_RGB_2: _pjLink.switchInput(PJLink.INPUT_RGB_2); break;
+        case CHAN_INPUT_RGB_3: _pjLink.switchInput(PJLink.INPUT_RGB_3); break;
+        case CHAN_INPUT_RGB_4: _pjLink.switchInput(PJLink.INPUT_RGB_4); break;
+        case CHAN_INPUT_RGB_5: _pjLink.switchInput(PJLink.INPUT_RGB_5); break;
+        case CHAN_INPUT_RGB_6: _pjLink.switchInput(PJLink.INPUT_RGB_6); break;
+        case CHAN_INPUT_RGB_7: _pjLink.switchInput(PJLink.INPUT_RGB_7); break;
+        case CHAN_INPUT_RGB_8: _pjLink.switchInput(PJLink.INPUT_RGB_8); break;
+        case CHAN_INPUT_RGB_9: _pjLink.switchInput(PJLink.INPUT_RGB_9); break;
         
-        case 321:   _pjLink.switchInput(PJLink.INPUT_VIDEO_1); break;
-        case 322:   _pjLink.switchInput(PJLink.INPUT_VIDEO_2); break;
-        case 323:   _pjLink.switchInput(PJLink.INPUT_VIDEO_3); break;
-        case 324:   _pjLink.switchInput(PJLink.INPUT_VIDEO_4); break;
-        case 325:   _pjLink.switchInput(PJLink.INPUT_VIDEO_5); break;
-        case 326:   _pjLink.switchInput(PJLink.INPUT_VIDEO_6); break;
-        case 327:   _pjLink.switchInput(PJLink.INPUT_VIDEO_7); break;
-        case 328:   _pjLink.switchInput(PJLink.INPUT_VIDEO_8); break;
-        case 329:   _pjLink.switchInput(PJLink.INPUT_VIDEO_9); break;
+        case CHAN_INPUT_VIDEO_1: _pjLink.switchInput(PJLink.INPUT_VIDEO_1); break;
+        case CHAN_INPUT_VIDEO_2: _pjLink.switchInput(PJLink.INPUT_VIDEO_2); break;
+        case CHAN_INPUT_VIDEO_3: _pjLink.switchInput(PJLink.INPUT_VIDEO_3); break;
+        case CHAN_INPUT_VIDEO_4: _pjLink.switchInput(PJLink.INPUT_VIDEO_4); break;
+        case CHAN_INPUT_VIDEO_5: _pjLink.switchInput(PJLink.INPUT_VIDEO_5); break;
+        case CHAN_INPUT_VIDEO_6: _pjLink.switchInput(PJLink.INPUT_VIDEO_6); break;
+        case CHAN_INPUT_VIDEO_7: _pjLink.switchInput(PJLink.INPUT_VIDEO_7); break;
+        case CHAN_INPUT_VIDEO_8: _pjLink.switchInput(PJLink.INPUT_VIDEO_8); break;
+        case CHAN_INPUT_VIDEO_9: _pjLink.switchInput(PJLink.INPUT_VIDEO_9); break;
         
-        case 331:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_1); break;
-        case 332:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_2); break;
-        case 333:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_3); break;
-        case 334:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_4); break;
-        case 335:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_5); break;
-        case 336:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_6); break;
-        case 337:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_7); break;
-        case 338:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_8); break;
-        case 339:   _pjLink.switchInput(PJLink.INPUT_DIGITAL_9); break;
+        case CHAN_INPUT_DIGITAL_1: _pjLink.switchInput(PJLink.INPUT_DIGITAL_1); break;
+        case CHAN_INPUT_DIGITAL_2: _pjLink.switchInput(PJLink.INPUT_DIGITAL_2); break;
+        case CHAN_INPUT_DIGITAL_3: _pjLink.switchInput(PJLink.INPUT_DIGITAL_3); break;
+        case CHAN_INPUT_DIGITAL_4: _pjLink.switchInput(PJLink.INPUT_DIGITAL_4); break;
+        case CHAN_INPUT_DIGITAL_5: _pjLink.switchInput(PJLink.INPUT_DIGITAL_5); break;
+        case CHAN_INPUT_DIGITAL_6: _pjLink.switchInput(PJLink.INPUT_DIGITAL_6); break;
+        case CHAN_INPUT_DIGITAL_7: _pjLink.switchInput(PJLink.INPUT_DIGITAL_7); break;
+        case CHAN_INPUT_DIGITAL_8: _pjLink.switchInput(PJLink.INPUT_DIGITAL_8); break;
+        case CHAN_INPUT_DIGITAL_9: _pjLink.switchInput(PJLink.INPUT_DIGITAL_9); break;
         
-        case 341:   _pjLink.switchInput(PJLink.INPUT_STORAGE_1); break;
-        case 342:   _pjLink.switchInput(PJLink.INPUT_STORAGE_2); break;
-        case 343:   _pjLink.switchInput(PJLink.INPUT_STORAGE_3); break;
-        case 344:   _pjLink.switchInput(PJLink.INPUT_STORAGE_4); break;
-        case 345:   _pjLink.switchInput(PJLink.INPUT_STORAGE_5); break;
-        case 346:   _pjLink.switchInput(PJLink.INPUT_STORAGE_6); break;
-        case 347:   _pjLink.switchInput(PJLink.INPUT_STORAGE_7); break;
-        case 348:   _pjLink.switchInput(PJLink.INPUT_STORAGE_8); break;
-        case 349:   _pjLink.switchInput(PJLink.INPUT_STORAGE_9); break;
+        case CHAN_INPUT_STORAGE_1: _pjLink.switchInput(PJLink.INPUT_STORAGE_1); break;
+        case CHAN_INPUT_STORAGE_2: _pjLink.switchInput(PJLink.INPUT_STORAGE_2); break;
+        case CHAN_INPUT_STORAGE_3: _pjLink.switchInput(PJLink.INPUT_STORAGE_3); break;
+        case CHAN_INPUT_STORAGE_4: _pjLink.switchInput(PJLink.INPUT_STORAGE_4); break;
+        case CHAN_INPUT_STORAGE_5: _pjLink.switchInput(PJLink.INPUT_STORAGE_5); break;
+        case CHAN_INPUT_STORAGE_6: _pjLink.switchInput(PJLink.INPUT_STORAGE_6); break;
+        case CHAN_INPUT_STORAGE_7: _pjLink.switchInput(PJLink.INPUT_STORAGE_7); break;
+        case CHAN_INPUT_STORAGE_8: _pjLink.switchInput(PJLink.INPUT_STORAGE_8); break;
+        case CHAN_INPUT_STORAGE_9: _pjLink.switchInput(PJLink.INPUT_STORAGE_9); break;
         
-        case 351:   _pjLink.switchInput(PJLink.INPUT_NETWORK_1); break;
-        case 352:   _pjLink.switchInput(PJLink.INPUT_NETWORK_2); break;
-        case 353:   _pjLink.switchInput(PJLink.INPUT_NETWORK_3); break;
-        case 354:   _pjLink.switchInput(PJLink.INPUT_NETWORK_4); break;
-        case 355:   _pjLink.switchInput(PJLink.INPUT_NETWORK_5); break;
-        case 356:   _pjLink.switchInput(PJLink.INPUT_NETWORK_6); break;
-        case 357:   _pjLink.switchInput(PJLink.INPUT_NETWORK_7); break;
-        case 358:   _pjLink.switchInput(PJLink.INPUT_NETWORK_8); break;
-        case 359:   _pjLink.switchInput(PJLink.INPUT_NETWORK_9); break;
+        case CHAN_INPUT_NETWORK_1: _pjLink.switchInput(PJLink.INPUT_NETWORK_1); break;
+        case CHAN_INPUT_NETWORK_2: _pjLink.switchInput(PJLink.INPUT_NETWORK_2); break;
+        case CHAN_INPUT_NETWORK_3: _pjLink.switchInput(PJLink.INPUT_NETWORK_3); break;
+        case CHAN_INPUT_NETWORK_4: _pjLink.switchInput(PJLink.INPUT_NETWORK_4); break;
+        case CHAN_INPUT_NETWORK_5: _pjLink.switchInput(PJLink.INPUT_NETWORK_5); break;
+        case CHAN_INPUT_NETWORK_6: _pjLink.switchInput(PJLink.INPUT_NETWORK_6); break;
+        case CHAN_INPUT_NETWORK_7: _pjLink.switchInput(PJLink.INPUT_NETWORK_7); break;
+        case CHAN_INPUT_NETWORK_8: _pjLink.switchInput(PJLink.INPUT_NETWORK_8); break;
+        case CHAN_INPUT_NETWORK_9: _pjLink.switchInput(PJLink.INPUT_NETWORK_9); break;
         
-        // TODO: REMOVE. This is for testing. /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // For testing/debugging.
         case 260:
             if (on) _pjLink.queryAll();
             break;

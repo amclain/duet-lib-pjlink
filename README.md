@@ -53,13 +53,13 @@ Wrapping the call to `off` in a 1 second wait time seems to be a valid workaroun
 The full list of channel numbers can be found in the file [PJLinkModule.java](https://github.com/amclain/duet-lib-pjlink/blob/master/com/alexmclain/duet/pjlink/dr0_1_1/PJLinkModule.java)
 
 ### Setting Up The Module
-``` c
+``` netlinx
 (***********************************************************)
 (*           DEVICE NUMBER DEFINITIONS GO BELOW            *)
 (***********************************************************)
 DEFINE_DEVICE
 
-dvPROJ            = 41001:1:0;
+dvPROJ = 41001:1:0;
 
 (***********************************************************)
 (*              CONSTANT DEFINITIONS GO BELOW              *)
@@ -129,7 +129,7 @@ channel_event[dvPROJ, PROJ_LAMP_ON]
 ```
 
 ### Triggering Projector Actions
-``` c
+``` netlinx
 // Projector Controls
 button_event[vdvTP, BTN_PROJECTOR_ON]
 {
