@@ -528,8 +528,9 @@ public class PJLink {
                     
                     if (_socketWriter != null) {    // This prevents the Duet module from crashing.
                         if (_sessionUsesAuthentication == true) {
-                            String pjlinkHash = new String(_md5.digest(new String(_pjlinkKey + " " + _pjlinkPassword).getBytes()));
-                            _socketWriter.print(_md5.digest(pjlinkHash.getBytes()) + command + "\r");
+                            String pjlinkHash = _pjlinkKey  + _pjlinkPassword;
+                            String commandHash = new BigInteger(1, _md5.digest(pjlinkHash.getBytes("ASCII"))).toString(16) + command + "\r";
+                            _socketWriter.print(commandHash);
                         }
                         else {
                             _socketWriter.print(command + "\r");
