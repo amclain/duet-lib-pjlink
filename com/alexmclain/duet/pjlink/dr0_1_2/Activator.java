@@ -1,4 +1,4 @@
-package com.alexmclain.duet.pjlink.dr0_1_1;
+package com.alexmclain.duet.pjlink.dr0_1_2;
 
 import com.amx.duet.devicesdk.base.ModuleActivator;
 

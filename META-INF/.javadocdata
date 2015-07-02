@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dev:type-info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dev="http://www.amx.com/duet/devicesdk"  xsi:schemaLocation="http://www.amx.com/duet/devicesdk/deviceclass.xsd">
-	<dev:class superclass="com.amx.duet.devicesdk.Utility" serializable="true" name="com.alexmclain.duet.pjlink.dr0_1_1.PJLinkModule">
+	<dev:class superclass="com.amx.duet.devicesdk.Utility" serializable="true" name="com.alexmclain.duet.pjlink.dr0_1_2.PJLinkModule">
 		<dev:extends>
-			<dev:extend name="com.alexmclain.duet.pjlink.dr0_1_1.PJLinkListener"></dev:extend>
+			<dev:extend name="com.alexmclain.duet.pjlink.dr0_1_2.PJLinkListener"></dev:extend>
 		</dev:extends>
 		<dev:fields>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="9" const="9" name="CHAN_TOGGLE_POWER" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="27" const="27" name="CHAN_POWER_ON" static="true"></dev:field>
+			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="28" const="28" name="CHAN_POWER_OFF" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="199" const="199" name="CHAN_AUDIO_MUTE" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="211" const="211" name="CHAN_PICTURE_MUTE" static="true"></dev:field>
 			<dev:field visibility="public" fulltype="int" type="int" final="true" constexpr="214" const="214" name="CHAN_FREEZE" static="true"></dev:field>
@@ -151,8 +154,8 @@
 			</dev:method>
 			<dev:method visibility="public" type="void" name="deviceStateChanged">
 				<dev:params>
-					<dev:param type="com.alexmclain.duet.pjlink.dr0_1_1.PJLink" name="source"></dev:param>
-					<dev:param type="com.alexmclain.duet.pjlink.dr0_1_1.PJLinkEvent" name="e"></dev:param>
+					<dev:param type="com.alexmclain.duet.pjlink.dr0_1_2.PJLink" name="source"></dev:param>
+					<dev:param type="com.alexmclain.duet.pjlink.dr0_1_2.PJLinkEvent" name="e"></dev:param>
 				</dev:params>
 			</dev:method>
 		</dev:methods>
