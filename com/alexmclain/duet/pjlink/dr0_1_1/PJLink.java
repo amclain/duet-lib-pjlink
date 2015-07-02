@@ -24,9 +24,6 @@ import java.util.TimerTask;
  * <p>
  * This class queues requests to the projector and only keeps the network
  * socket open for the duration of each request/response cycle.
- * 
- * @author Alex McLain <alex@alexmclain.com>
- * @version 0.1.1
  */
 public class PJLink {
     //   Packed error bits:

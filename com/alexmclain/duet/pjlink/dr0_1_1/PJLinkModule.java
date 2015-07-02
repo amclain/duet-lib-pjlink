@@ -14,10 +14,7 @@ import com.amx.duet.util.Timer;
 
 /**
  * PJLink Duet Module
- * @version 0.1.1
  * 
- * @author Alex McLain <alex@alexmclain.com>
- *
  * The PJLinkModule class is the NetLinx entry point.
  * 
  * Refer to the PJLink specification:
